@@ -1,9 +1,10 @@
-name: Build Trading AI APK
+name: Build Trading AI Advanced APK
 
 on:
   workflow_dispatch:
   push:
-    branches: [ main ]
+    branches:
+      - main
 
 jobs:
   build:
@@ -13,28 +14,29 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Extract Android project
+      - name: Extract Advanced Project
         run: |
-          unzip -o TradingAI_Android_Project.zip -d extracted
-          echo "PROJECT_DIR=extracted" >> $GITHUB_ENV
+          rm -rf project
+          mkdir project
+          unzip -o TradingAI_Advanced_v2.zip -d project
 
-      - name: Set up Java
+      - name: Setup Java
         uses: actions/setup-java@v4
         with:
           distribution: temurin
           java-version: '17'
 
-      - name: Set up Gradle
+      - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v4
         with:
           gradle-version: '8.9'
 
-      - name: Build APK
-        working-directory: extracted
+      - name: Build Debug APK
+        working-directory: project
         run: gradle assembleDebug --no-daemon
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
-          name: TradingAI-debug-APK
-          path: extracted/app/build/outputs/apk/debug/app-debug.apk
+          name: TradingAI-Advanced-APK
+          path: project/app/build/outputs/apk/debug/app-debug.apk
